@@ -5,7 +5,7 @@ import Error from 'next/error'
 
 export default class extends React.Component{
     
-    static async getInitialProps({res}){
+    static async getInitialProps({ res = {} }){
         try{
             let req = await fetch('https://api.audioboom.com/channels/recommended?category_ids[]=179')
             let {body : channels} = await req.json()

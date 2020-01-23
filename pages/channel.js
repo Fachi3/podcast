@@ -3,10 +3,11 @@ import Link from 'next/link'
 import Error from 'next/error'
 import Layout from '../components/Layout'
 import ChannelGrid from '../components/ChannelGrid'
+import PodcatsList from '../components/PodcatsList'
 
 export default class extends React.Component{
     
-    static async getInitialProps({query, res}){
+    static async getInitialProps({ query, res = {} }){
         try{
             let idChannel = query.id
 
@@ -15,6 +16,21 @@ export default class extends React.Component{
                 fetch(`https://api.audioboom.com/channels/${idChannel}/child_channels`),
                 fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`)
             ])
+
+            if(reqChannel.status >= 404){
+                res.statusCode = reqChannel.status
+                return { channel: null, audioClips: null, series:null, statuCode:reqChannel.status }
+            }
+
+            if(reqSeries.status >= 404){
+                res.statusCode = reqSeries.status
+                return { channel: null, audioClips: null, series:null, statuCode:reqSeries.status }
+            }
+            
+            if(reqAudios.status >= 404){
+                res.statusCode = reqAudios.status
+                return { channel: null, audioClips: null, series:null, statuCode:reqAudios.status }
+            }
 
             let dataChannel = await reqChannel.json()
             let channel = dataChannel.body.channel
@@ -27,30 +43,32 @@ export default class extends React.Component{
 
             return { channel, audioClips, series, statuCode:200 }
         } catch(e){
+            res.statusCode = 503
             return { channel: null, audioClips: null, series:null, statuCode:503 }
         }
     }
 
     render(){
         const {channel, audioClips, series, statusCode} = this.props
-        
-        console.log(statusCode)
 
-        // if(statusCode !== 200){
-        //     return <Error statusCode={statusCode} />
-        // }
+        if(channel ==null && statusCode !== 200){
+            return <Error statusCode={statusCode} />
+        }
 
         return <Layout title={channel.title}>
             <div className="banner" style={{ backgroundImage: `url(${channel.urls.banner_image.original})` }} />
 
             <h1>{ channel.title }</h1>
 
-            { series.length > 0 &&
+            { series.length > 0 &&             
                 <div>
                     <h2>Series</h2>
-                    <ChannelGrid channels={ series } />
+                    <ChannelGrid channels={ series, audioClips } />
                 </div>
             }
+
+            <h2>Ultimos Podcasts</h2>
+            <PodcatsList podcasts={ audioClips } />
 
             <style jsx>{`
                 .banner {

@@ -2,19 +2,35 @@ import Link from 'next/link'
 
 export default class ChannelGrid extends React.Component{
     render(){
-        const {channels} = this.props
+        const {channels, audioClips} = this.props
         console.log(channels)
         return <div>
-            <div className="channels">
-                {channels.map((channel) => (
-                    <Link href={`/channel?id=${channel.id}`} prefetch key={channel.id}>
-                        <a className="channel">
-                            <img src={channel.urls.logo_image.original} alt="logo-channel" />
-                            <h2>{channel.title}</h2>
-                        </a>
-                    </Link>
-                ))}
-            </div>
+            
+            { channels != null &&
+                <div className="channels">
+                    {channels.map((channel) => (
+                        <Link href={`/channel?id=${channel.id}`} prefetch key={channel.id}>
+                            <a className="channel">
+                                <img src={channel.urls.logo_image.original} alt="logo-channel" />
+                                <h2>{channel.title}</h2>
+                            </a>
+                        </Link>
+                    ))}
+                </div>
+            }
+
+            { audioClips != null &&
+                <div className="channels">
+                    {audioClips.map((audioClip) => (
+                        <Link href={`/channel?id=${audioClip.id}`} prefetch key={audioClip.id}>
+                            <a className="channel">
+                                <img src={audioClip.channel.urls.logo_image.original} alt="logo-channel" />
+                                <h2>{channel.title}</h2>
+                            </a>
+                        </Link>
+                    ))}
+                </div>
+            }
 
             <style jsx>{`
                 .channels {

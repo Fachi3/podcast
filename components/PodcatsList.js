@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default class extends React.Component{
     render(){
         const {podcasts} = this.props
-
+        console.log(podcasts)
         return <div>
             {podcasts.map((podcast) => (
                 <Link href={`/podcast?id=${podcast.id}`} prefetch key={podcast.id}>

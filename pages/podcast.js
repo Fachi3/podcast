@@ -13,7 +13,6 @@ export default class extends React.Component{
 
     render(){
         const {audio_clip_obj} = this.props
-        console.log(audio_clip_obj.title)
 
         return <div>
             <header>Podcast</header>
